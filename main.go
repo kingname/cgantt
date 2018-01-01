@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"./task"
+	"github.com/kingname/cgantt/task"
 )
 
 func main() {
