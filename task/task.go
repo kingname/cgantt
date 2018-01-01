@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -22,13 +21,7 @@ type Task struct {
 	EndAt   time.Time
 }
 
-func raiseErr(err error) {
-	if err != nil {
-		fmt.Println("err: ", err)
-	}
-}
-
-func DrawLine(line Line) {
+func DrawLine(line Line) string {
 	fullLine := ""
 	for i := 0; i < line.PreCharLength; i++ {
 		fullLine += line.PreChar
@@ -39,7 +32,7 @@ func DrawLine(line Line) {
 	for i := 0; i < line.PostCharLength; i++ {
 		fullLine += line.PostChar
 	}
-	fmt.Println(fullLine)
+	return fullLine
 }
 
 //func DrawTask(task Task) {
