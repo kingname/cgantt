@@ -1,7 +1,8 @@
 package task
 
 import (
-	"time"
+	// "time"
+	"bytes"
 )
 
 // Line represents the line, such: ----------==============
@@ -17,8 +18,8 @@ type Line struct {
 type Task struct {
 	Name    string
 	Gline   Line
-	StartAt time.Time
-	EndAt   time.Time
+	// StartAt time.Time
+	// EndAt   time.Time
 }
 
 func DrawLine(line Line) string {
@@ -35,6 +36,32 @@ func DrawLine(line Line) string {
 	return fullLine
 }
 
-//func DrawTask(task Task) {
-//	return nil
-//}
+//DrawTask 将一个任务的任务名和线拼接在一起
+func DrawTask(task Task, rjust int) string{
+	taskName := task.Name
+	var buffer bytes.Buffer
+	if len(taskName) >= rjust {
+		taskName = taskName[:rjust - 2]
+	} else {
+		for i:=0;i<rjust - len(taskName);i++{
+			taskName += " "
+		}
+	}
+
+	taskLine := DrawLine(task.Gline)
+	buffer.WriteString("|")
+	buffer.WriteString(taskName)
+	buffer.WriteString(" | ")
+	buffer.WriteString(taskLine)
+	buffer.WriteString("|")
+	return buffer.String()
+}
+
+//DrawTaskArray 把一系列任务拼接为长的字符串数组
+func DrawTaskArray(taskArray []Task) []string{
+	var taskLineArray []string
+	for _, task := range taskArray{
+		taskLineArray = append(taskLineArray, DrawTask(task, 10))
+	}
+	return taskLineArray
+}
