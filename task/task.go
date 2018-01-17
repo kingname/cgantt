@@ -1,8 +1,11 @@
 package task
 
 import (
-	// "time"
+	"os"
+	"time"
+	"fmt"
 	"bytes"
+	"github.com/kingname/cgantt/utils"
 )
 
 // Line represents the line, such: ----------==============
@@ -18,8 +21,8 @@ type Line struct {
 type Task struct {
 	Name    string
 	Gline   Line
-	// StartAt time.Time
-	// EndAt   time.Time
+	StartAt time.Time
+	EndAt   time.Time
 }
 
 func DrawLine(line Line) string {
@@ -48,6 +51,7 @@ func DrawTask(task Task, rjust int) string{
 		}
 	}
 
+	task.Gline = CalcLine(time.Now(), task)
 	taskLine := DrawLine(task.Gline)
 	buffer.WriteString("|")
 	buffer.WriteString(taskName)
@@ -64,4 +68,32 @@ func DrawTaskArray(taskArray []Task) []string{
 		taskLineArray = append(taskLineArray, DrawTask(task, 10))
 	}
 	return taskLineArray
+}
+
+func clacWidthPerDay() int{
+	terminalWidth := utils.GetCurrentTerminalWidth()
+	if terminalWidth <= 20 {
+		fmt.Println("终端窗口太小！不能绘制甘特图")
+		os.Exit(3)
+	}
+	widthPerDay := (terminalWidth - 20) / 15
+	return widthPerDay
+}
+
+func CalcLine(now time.Time, task Task) Line{
+	startTime := task.StartAt
+	endTime := task.EndAt
+	dayBefore7days := startTime.Add(-24 * time.Hour * 7)
+	dayAfter7days := startTime.Add(24 * time.Hour * 7)
+	if startTime.Before(dayBefore7days) {
+		startTime = dayBefore7days
+	}
+	if endTime.After(dayBefore7days){
+		endTime = dayAfter7days
+	}
+	preCharNum := int(startTime.Sub(dayBefore7days).Hours() / 24)
+	afterCharNum := int(dayAfter7days.Sub(endTime).Hours() / 24)
+	middleCharNum := int(endTime.Sub(startTime).Hours() / 24)
+	line := Line{" ", preCharNum, "=", middleCharNum, " ", afterCharNum}
+	return line
 }
