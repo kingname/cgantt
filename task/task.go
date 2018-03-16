@@ -25,6 +25,12 @@ type Task struct {
 	EndAt   time.Time
 }
 
+type ConfigedTask struct {
+	Name string
+	StartAt time.Time
+	EndAt time.Time
+}
+
 func DrawLine(line Line) string {
 	fullLine := ""
 	for i := 0; i < line.PreCharLength; i++ {

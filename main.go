@@ -4,8 +4,32 @@ import (
 	"github.com/kingname/cgantt/task"
 	"github.com/kingname/cgantt/utils"
 	"fmt"
+	"os"
 	"time"
+	"encoding/json"
+	"io/ioutil"
 )
+
+func ParseJson(jsonStr string) []*task.ConfigedTask{
+	t := []*task.ConfigedTask{}
+	err := json.Unmarshal([]byte(jsonStr), &t)
+	if nil != err{
+		panic(err)
+	}
+	return t
+}
+
+func ReadAgenda() []*task.ConfigedTask {
+	_, err := os.Stat("Agenda.json")
+	if nil == err{
+		jsonStr, err := ioutil.ReadFile("Agenda.json")
+		if nil != err{
+			panic(err)
+		}
+		return ParseJson(string(jsonStr))
+	}
+	return nil
+}
 
 func main() {
 	width := utils.GetCurrentTerminalWidth()
